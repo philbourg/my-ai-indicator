@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useWizard } from "../contexts/WizardContext";
+import { useTranslation } from "../contexts/TranslationContext";
 
 interface IntroductionProps {
   onNext: () => void;
@@ -10,8 +11,10 @@ interface IntroductionProps {
 const Introduction: React.FC<IntroductionProps> = ({ onNext }) => {
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
+  const [showCCInspiration, setShowCCInspiration] = useState(false);
   const [knowsLicense, setKnowsLicense] = useState<boolean | null>(null);
   const { setQuestionnaireMode } = useWizard();
+  const { t } = useTranslation();
 
   // Function to handle selection of knowledge state
   const handleLicenseKnowledge = (knows: boolean) => {
@@ -31,11 +34,10 @@ const Introduction: React.FC<IntroductionProps> = ({ onNext }) => {
       <div className="bg-surface-card rounded-xl border border-white/10 p-6">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-text-primary">
-            Bienvenue sur l&apos;indicateur d&apos;utilisation de l&apos;IA
+            {t("welcomeTitle")}
           </h1>
           <p className="text-lg text-text-secondary max-w-3xl mx-auto">
-            Cet outil vous aidera à déterminer dans quelle mesure votre
-            processus créatif utilise l&apos;intelligence artificielle.
+            {t("welcomeDescription")}
           </p>
         </div>
 
@@ -43,188 +45,303 @@ const Introduction: React.FC<IntroductionProps> = ({ onNext }) => {
         <div className="mt-8 bg-surface-dark rounded-xl border border-white/10 p-6">
           <div className="flex items-center mb-4">
             <h2 className="text-xl font-semibold text-text-primary">
-              Connaissez-vous le type de licence dont vous avez besoin ?
+              {t("licenseQuestion")}
             </h2>
           </div>
 
-          <div className="space-y-3 mt-6">
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <button
               onClick={() => handleLicenseKnowledge(true)}
-              className={`w-full flex items-center p-4 rounded-lg border border-white/10 bg-surface-card hover:bg-surface-hover transition-colors ${
-                knowsLicense === true ? "ring-2 ring-primary-500" : ""
+              className={`flex-1 px-4 py-3 rounded-lg transition-colors ${
+                knowsLicense === true
+                  ? "bg-primary-500 text-white"
+                  : "bg-surface-card hover:bg-primary-500/20 text-text-primary"
               }`}
             >
-              <div className="flex-shrink-0 w-6 h-6 border-2 rounded-full border-primary-500 flex items-center justify-center mr-3">
-                {knowsLicense === true && (
-                  <div className="w-3 h-3 rounded-full bg-primary-500"></div>
-                )}
-              </div>
-              <span className="text-lg text-text-primary">
-                Oui. Je connais la licence dont j&apos;ai besoin.
-              </span>
+              {t("yes")}
             </button>
-
             <button
               onClick={() => handleLicenseKnowledge(false)}
-              className={`w-full flex items-center p-4 rounded-lg border border-white/10 bg-surface-card hover:bg-surface-hover transition-colors ${
-                knowsLicense === false ? "ring-2 ring-primary-500" : ""
+              className={`flex-1 px-4 py-3 rounded-lg transition-colors ${
+                knowsLicense === false
+                  ? "bg-primary-500 text-white"
+                  : "bg-surface-card hover:bg-primary-500/20 text-text-primary"
               }`}
             >
-              <div className="flex-shrink-0 w-6 h-6 border-2 rounded-full border-primary-500 flex items-center justify-center mr-3">
-                {knowsLicense === false && (
-                  <div className="w-3 h-3 rounded-full bg-primary-500"></div>
-                )}
-              </div>
-              <span className="text-lg text-text-primary">
-                Non. J&apos;ai besoin d&apos;aide pour choisir une licence.
-              </span>
+              {t("no")}
             </button>
           </div>
-
-          {/* Action buttons based on selection */}
-          {knowsLicense === true && (
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={onNext}
-                className="bg-primary-500 hover:bg-primary-600 text-white font-semibold py-4 px-10 rounded-lg transition-colors shadow-glow text-lg"
-              >
-                Choisir ma licence
-              </button>
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Second box: Explanations */}
-      <div className="bg-surface-dark rounded-xl border border-white/10 p-6 space-y-4">
-        {/* How it works section */}
-        <div className="space-y-2">
+        {/* Additional information buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <button
             onClick={() => setShowHowItWorks(!showHowItWorks)}
-            className="w-full flex items-center justify-between text-left"
+            className="flex-1 px-4 py-3 bg-surface-dark hover:bg-surface-card rounded-lg transition-colors text-text-primary"
           >
-            <h2 className="text-xl font-semibold text-text-primary flex items-center">
-              <span className="bg-primary-500 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-white">
-                ?
-              </span>
-              Comment ça marche
-            </h2>
-            <svg
-              className={`w-6 h-6 text-text-primary transition-transform ${
-                showHowItWorks ? "rotate-180" : ""
-              }`}
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            {t("howItWorks")}
           </button>
-
-          {showHowItWorks && (
-            <div className="space-y-3 pl-11">
-              <div className="flex items-start">
-                <span className="bg-primary-600 text-white rounded-full min-w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
-                  1
-                </span>
-                <p className="text-text-primary">
-                  {knowsLicense === false
-                    ? "Répondez à quelques questions sur votre utilisation de l'IA"
-                    : "Choisissez votre niveau d'utilisation de l'IA"}
-                </p>
-              </div>
-              <div className="flex items-start">
-                <span className="bg-primary-600 text-white rounded-full min-w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
-                  2
-                </span>
-                <p className="text-text-primary">
-                  {knowsLicense === false
-                    ? "Obtenez une recommandation de licence adaptée"
-                    : "Confirmez votre choix"}
-                </p>
-              </div>
-              <div className="flex items-start">
-                <span className="bg-primary-600 text-white rounded-full min-w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
-                  3
-                </span>
-                <p className="text-text-primary">
-                  Obtenez une évaluation détaillée
-                </p>
-              </div>
-              <div className="flex items-start">
-                <span className="bg-primary-600 text-white rounded-full min-w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">
-                  4
-                </span>
-                <p className="text-text-primary">Partagez vos résultats</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="border-t border-white/10 my-4" />
-
-        {/* Why use this section */}
-        <div className="space-y-2">
           <button
             onClick={() => setShowWhy(!showWhy)}
-            className="w-full flex items-center justify-between text-left"
+            className="flex-1 px-4 py-3 bg-surface-dark hover:bg-surface-card rounded-lg transition-colors text-text-primary"
           >
-            <h2 className="text-xl font-semibold text-text-primary flex items-center">
-              <span className="bg-primary-500 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-white">
-                ?
-              </span>
-              Pourquoi utiliser cet indicateur
-            </h2>
-            <svg
-              className={`w-6 h-6 text-text-primary transition-transform ${
-                showWhy ? "rotate-180" : ""
-              }`}
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            {t("whyIndicate")}
           </button>
+          <button
+            onClick={() => setShowCCInspiration(!showCCInspiration)}
+            className="flex-1 px-4 py-3 bg-surface-dark hover:bg-surface-card rounded-lg transition-colors text-text-primary"
+          >
+            {t("ccInspiration")}
+          </button>
+        </div>
 
-          {showWhy && (
-            <div className="space-y-2 pl-11">
-              <div className="flex items-start">
-                <span className="text-primary-400 mr-2">•</span>
-                <p className="text-text-primary">
-                  Pour être transparent avec votre public et vos collaborateurs
-                </p>
-              </div>
-              <div className="flex items-start">
-                <span className="text-primary-400 mr-2">•</span>
-                <p className="text-text-primary">
-                  Pour valoriser votre démarche créative, quelle qu&apos;elle
-                  soit
-                </p>
-              </div>
-              <div className="flex items-start">
-                <span className="text-primary-400 mr-2">•</span>
-                <p className="text-text-primary">
-                  Pour contribuer au débat sur la place de l&apos;IA dans
-                  l&apos;art
-                </p>
+        {/* Second box: Explanations */}
+        <div className="bg-surface-dark rounded-xl border border-white/10 p-6 space-y-4">
+          {/* How it works section */}
+          <div>
+            <div
+              className="flex justify-between items-center cursor-pointer"
+              onClick={() => setShowHowItWorks(!showHowItWorks)}
+            >
+              <h3 className="text-lg font-semibold text-text-primary">
+                Comment ça fonctionne ?
+              </h3>
+              <div className="text-primary-500">
+                {showHowItWorks ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
               </div>
             </div>
-          )}
+            {showHowItWorks && (
+              <div className="mt-4 space-y-3 text-text-secondary">
+                <p>
+                  Cet outil vous guide à travers un processus simple pour
+                  déterminer quelle catégorie d&apos;implication IA correspond à
+                  votre création musicale et textuelle.
+                </p>
+                <p>
+                  Pour chaque domaine (musique et texte), vous pourrez soit :
+                </p>
+                <ul className="list-disc list-inside pl-4 space-y-2">
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Choisir directement une catégorie
+                    </span>{" "}
+                    si vous savez déjà quel niveau d&apos;IA vous avez utilisé
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Répondre à un questionnaire
+                    </span>{" "}
+                    qui vous aidera à déterminer la catégorie la plus appropriée
+                  </li>
+                </ul>
+                <p>
+                  À la fin, vous recevrez un badge et du code à intégrer pour
+                  afficher votre badge IA sur vos plateformes.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Why use this section */}
+          <div>
+            <div
+              className="flex justify-between items-center cursor-pointer"
+              onClick={() => setShowWhy(!showWhy)}
+            >
+              <h3 className="text-lg font-semibold text-text-primary">
+                Pourquoi utiliser ce badge ?
+              </h3>
+              <div className="text-primary-500">
+                {showWhy ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </div>
+            </div>
+            {showWhy && (
+              <div className="mt-4 space-y-3 text-text-secondary">
+                <p>
+                  À l&apos;ère de l&apos;IA générative, il devient crucial
+                  d&apos;offrir de la
+                  <span className="font-medium text-text-primary">
+                    {" "}
+                    transparence{" "}
+                  </span>
+                  sur le processus créatif. Le Badge IA vous permet de :
+                </p>
+                <ul className="list-disc list-inside pl-4 space-y-2">
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Maintenir la confiance
+                    </span>{" "}
+                    avec votre public en étant transparent sur l&apos;origine de
+                    votre travail
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Valoriser votre processus créatif
+                    </span>{" "}
+                    qu&apos;il soit principalement humain ou assisté par
+                    l&apos;IA
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Contribuer à un écosystème sain
+                    </span>{" "}
+                    où la création assistée par IA est clairement identifiable
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Compléter vos licences existantes
+                    </span>{" "}
+                    (Creative Commons ou autres) avec cette information sur la
+                    provenance
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* New section: Creative Commons inspiration */}
+          <div>
+            <div
+              className="flex justify-between items-center cursor-pointer"
+              onClick={() => setShowCCInspiration(!showCCInspiration)}
+            >
+              <h3 className="text-lg font-semibold text-text-primary">
+                Inspiré de Creative Commons
+              </h3>
+              <div className="text-primary-500">
+                {showCCInspiration ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </div>
+            </div>
+            {showCCInspiration && (
+              <div className="mt-4 space-y-3 text-text-secondary">
+                <p>
+                  Notre Badge IA s&apos;inspire directement de Creative Commons,
+                  qui a révolutionné la façon dont les créateurs peuvent
+                  partager leurs œuvres avec des permissions claires.
+                </p>
+                <p>
+                  <span className="font-medium text-text-primary">
+                    Similarités avec Creative Commons :
+                  </span>
+                </p>
+                <ul className="list-disc list-inside pl-4 space-y-2">
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Approche standardisée
+                    </span>{" "}
+                    avec des catégories claires et précises
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Triple couche
+                    </span>{" "}
+                    (humaine, technique et explicative) pour une compréhension à
+                    tous les niveaux
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Badges visuels
+                    </span>{" "}
+                    reconnaissables qui communiquent l&apos;information
+                    essentielle au premier coup d&apos;œil
+                  </li>
+                  <li>
+                    <span className="font-medium text-text-primary">
+                      Métadonnées standardisées
+                    </span>{" "}
+                    pour l&apos;intégration technique dans les fichiers et sites
+                    web
+                  </li>
+                </ul>
+                <p>
+                  <span className="font-medium text-text-primary">
+                    Différence principale :
+                  </span>{" "}
+                  Là où Creative Commons définit comment une œuvre peut être{" "}
+                  <em>utilisée</em>, notre badge précise comment elle a été{" "}
+                  <em>créée</em>.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
